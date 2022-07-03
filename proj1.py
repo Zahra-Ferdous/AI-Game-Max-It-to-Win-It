@@ -93,18 +93,17 @@ def show_press(press, lastPressed, local_isAI):
             
     #print("in show press: hi = {}, lo = {} ".format(hi, lo))
                     
-                    
-    #--------------------------------------- IF IT IS AI --------------------------------
-    #else:
+
+
         
     
     
     
 #----------------------- after pressing the pass buttton ----------------------   
     
-def passval(btn, lo, hi):
+def passval(btn):
     
-    global numH,numC,totalH,totalC,isAI,lastSelected,valid
+    global numH,numC,totalH,totalC,isAI,lastSelected,valid, hi, lo
     
     
     #if( not(local_isAI) ):
@@ -148,6 +147,8 @@ def passval(btn, lo, hi):
         
         
     #i = i+1  
+    
+    print("After AI move hi = {}, lo = {}".format( hi, lo) )
     
     totalC=str(numC)
     finalC.set(totalC)
@@ -233,11 +234,7 @@ def game():
     play = True
     
     
-    #--------------------------------------------------
-    
-    #path = r'G:/4-1/AI/lab/test.text'
-    #assert os.path.isfile(path)
-    
+   
     #---------------------------------------- TAKE INPUT FROM TEXT FILE ---------------------------------------
 
     #with open('/G:/fourone/AI/lab/test.txt', 'r') as file:
@@ -325,7 +322,7 @@ def game():
           
           print("\n\n")
           
-          passBtn = Button(window, text=' PASS', fg='black', bg='red', height=1, width=7, command= lambda: passval(passBtn, lo, hi ))
+          passBtn = Button(window, text=' PASS', fg='black', bg='red', height=1, width=7, command= lambda: passval(passBtn ))
           passBtn.pack()
         
           
@@ -336,7 +333,11 @@ def game():
            
           global numC 
           
+          print("Initially, hi = {}, lo = {}".format(hi,lo))
+          
           minmax(lo,hi)
+          
+          print("After MinMAX, hi = {}, lo = {}".format(hi,lo))
     
           if(lo<hi):
     
@@ -379,159 +380,27 @@ def game():
           
           print("\n\n")
           
-          passBtn = Button(window, text=' PASS', fg='black', bg='red', height=1, width=7, command= lambda: passval(passBtn, lo, hi ))
+          passBtn = Button(window, text=' PASS', fg='black', bg='red', height=1, width=7, command= lambda: passval(passBtn))
           passBtn.pack()
         
           
           window.mainloop()
 
-          '''
-          curr_size = (hi-lo)+1
-          if (not isAI):
-              
-            # ----------------------------------------- CHOOSE SUFFIX OR PREFIX ---------------------------------
-            while (1):
-            
-                print("Do you want to chose from prefix or suffix\n")
-                print("1. Prefix\n2. Suffix\n")
-                type = int(input("Enter your choice: "))
-                print("\n")
-                if (type == 1 or type == 2):
-                  break
-               
-                print("Wrong Selection!!! Try again..\n\n")
-            
-            #--------------------------------------- HOW MANY CONSECUTIVE VALUE --------------------------------
-            
-            while (1):
-
-                print("How many consecutive values you want to pick: ")
-                lenn = int(input())
-                if (lenn<=curr_size and lenn>0):
-                
-                    print("\n")
-                    break
-                
-                print("Chose within current size!!\n\n")
-           
-            # -------------------------------------- TAKE ALL USER INPUT ------------------------------------
-            if (type == 1):
-            
-                for i in range(lo, lo+lenn):
-                
-                    user_val += test[i]
-                
-                lo+=lenn
-            
-            else:
-            
-                for i in range(hi, hi-lenn, -1):
-                
-                    user_val+=test[i]
-                
-                hi-=lenn
-            
-
-            
-            print("After your turn\n")
           
-            
-          #------------------------------------ COMPUTER PLAYING WITH MINIMAX --------------------------------  
-            
-          else:
-          
-              minmax(lo,hi)
-              #printf(lo,hi)
-              
-              print("Please Wait.. Computer is thinking")
-              delay(3)
-              print("\n\n")
+game()
 
-              
-              if (prefix[lo][hi]):
-              
-                  print("Computer has chosen {} values from prefix ".format(path[lo][hi]))
-                  #print(path[lo][hi])
-
-                  for i in range(lo, lo+path[lo][hi]):
-                  
-                      comp_val+=test[i]
-                  
-                  lo+=path[lo][hi]
-              
-              else:
-              
-                  print("Computer has chosen {} values from suffix ".format(path[lo][hi]))
-                  #print(path[lo][hi])
-
-                  for i in range(hi, hi-path[lo][hi], -1):
-                  
-                      comp_val+=test[i]
-                  
-                  hi-=path[lo][hi]
-              
-
-              
-              print("\n\nAfter computer's turn\n")
-        
-          
-          #----------------------------- SCORE ------------------------------
-          
-          print("Your current score: ")
-          print(user_val)
-          print("Computer's current score:")
-          print(comp_val)
-          print("\n\n")
-          isAI = not isAI
-
-
-      if (user_val>comp_val):
+if (totalH>totalC):
         
             print("Congratulations!!! You are the winner..\n")
+            
         
-      elif (user_val<comp_val):
+elif (totalH<totalC):
         
             print("Computer Wins!!! Better luck next time..\n")
         
-      else:
+else:
         
             print("The match drawn!!!\n")
-        
-      # ------------------------------- CONTINUATION ------------------------------------
-      
-      print("\nDo you want to continue?\n")
-      print("1. Yes\n2. No\n")
-
-      type = int(input("Enter Choice: "))
-      
-      if (type != 1):
-      
-          play=False
-      
-      print("\n\n")
-
-#-------------------------------------------------------------------------------------------------------------
-
-for i in numbers:
-    btn = tk.Button(window, text=i, height=1, width=7, command=lambda lastPressed = lastPressed , press = i:show_press(press,lastPressed))
-    btn.pack()
-    lastPressed += 1
-    buttons.append(btn)  # adding button reference
-    
-passBtn = Button(window, text=' PASS', fg='black', bg='red', height=1, width=7, command= lambda: passval(passBtn))
-passBtn.pack()
-    
-finalC= StringVar()
-finalH= StringVar()
-scoreH = Entry(window,textvariable=finalH).place(x=200,y=250)
-scoreC = Entry(window,textvariable=finalC).place(x=-0,y=250)
-window.mainloop()
-
-'''
-
-game()
-
-
 
 
 
