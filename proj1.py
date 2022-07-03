@@ -46,12 +46,12 @@ scoreC = Entry(window,textvariable=finalC).place(x=-0,y=250)
 hi = 0
 lo = 0
 
-valid = []
+#valid = []
 
 
 #------------------ after a number is selected ---------------------
 
-def show_press(press, lastPressed, valid, local_isAI):
+def show_press(press, lastPressed, local_isAI):
     global numH,numC,totalH,totalC,lo,hi, lastSelected, test
     
     #lo = valid[0]
@@ -68,18 +68,18 @@ def show_press(press, lastPressed, valid, local_isAI):
             if i==lastPressed:
                 #print(lastPressed)
                 
-                print("\nthe button now pressed is {} and valid are {}, {}.\nthe last selected was {}".format(i,valid[0],valid[1],lastSelected))
+                print("\nthe button now pressed is {} and valid are {}, {}.\nthe last selected was {}".format( i , lo , hi , lastSelected ))
                 
-                if ( ( lastSelected == -1 and ( valid[0] == i or valid[1] == i ) ) or ( valid[0] == i and lastSelected == i-1 ) or ( valid[1] == i and lastSelected == i+1 ) ):
+                if ( ( lastSelected == -1 and ( lo == i or hi == i ) ) or ( lo == i and lastSelected == i-1 ) or ( hi == i and lastSelected == i+1 ) ):
                     
-                    if valid[0] == i :
+                    if lo == i :
                         lo = i+1
                         print("lo being updated")
-                        valid[0] = i+1
-                    elif valid[1] == i :
+                        #valid[0] = i+1
+                    elif hi == i :
                         hi = i-1
                         print("hi being updated")
-                        valid[1] = i-1
+                        #valid[1] = i-1
                     lastSelected = i
                     
                     numH=numH+int(test[i])
@@ -91,7 +91,7 @@ def show_press(press, lastPressed, valid, local_isAI):
             
             i = i+1
             
-    print("in show press: hi = {}, lo = {} ".format(hi, lo))
+    #print("in show press: hi = {}, lo = {} ".format(hi, lo))
                     
                     
     #--------------------------------------- IF IT IS AI --------------------------------
@@ -152,8 +152,8 @@ def passval(btn, lo, hi):
     totalC=str(numC)
     finalC.set(totalC)
     
-    valid[0] = lo
-    valid[1] = hi
+    #valid[0] = lo
+    #valid[1] = hi
     #isAI = not(isAI)
         
 #--------------------------------------------minimax algo-----------------------------------------
@@ -308,16 +308,17 @@ def game():
       turn = 0
 
 
-#----------------------------------------SHOW ARRAY --------------------------------------------
 
       while (lo<=hi):
-     
           
+#----------------------------------------If HUMAN MOVES FIRST--------------------------------------------
+     
+       if choice == 2:   
           print("available values:")
           for i in range(lo, hi+1):
           
             #print(test[i])
-            btn = tk.Button(window, text=test[i], height=1, width=7, command=lambda lastPressed = lastPressed , press = i:show_press(press, lastPressed, valid, isAI))
+            btn = tk.Button(window, text=test[i], height=1, width=7, command=lambda lastPressed = lastPressed , press = i:show_press(press, lastPressed, isAI))
             btn.pack()
             lastPressed += 1
             buttons.append(btn)
@@ -330,6 +331,59 @@ def game():
           
           window.mainloop()
 
+#----------------------------------------If AI MOVES FIRST--------------------------------------------          
+       elif choice == 1:
+           
+          global numC 
+          
+          minmax(lo,hi)
+    
+          if(lo<hi):
+    
+              if (prefix[lo][hi]):
+        
+                for i in range(lo, lo+path[lo][hi]):
+            
+                    #comp_val+=numbers[i]
+                    numC=numC+int(test[i])
+                    test[i]=0
+                    buttons[i].pack_forget()
+                
+                lo+=path[lo][hi]
+                  
+              else:
+         
+                for i in range(hi, hi-path[lo][hi], -1):
+                
+                    #comp_val+=numbers[i]
+                    numC=numC+int(test[i])
+                    test[i]=0
+                    buttons[i].pack_forget()
+                
+                hi-=path[lo][hi]
+            
+        
+        
+   
+    
+          totalC=str(numC)
+          finalC.set(totalC)
+          
+          for i in range(lo, hi+1):
+          
+            #print(test[i])
+            btn = tk.Button(window, text=test[i], height=1, width=7, command=lambda lastPressed = lastPressed , press = i:show_press(press, lastPressed, isAI))
+            btn.pack()
+            lastPressed += 1
+            buttons.append(btn)
+          
+          print("\n\n")
+          
+          passBtn = Button(window, text=' PASS', fg='black', bg='red', height=1, width=7, command= lambda: passval(passBtn, lo, hi ))
+          passBtn.pack()
+        
+          
+          window.mainloop()
 
           '''
           curr_size = (hi-lo)+1
