@@ -40,8 +40,11 @@ buttons = [] # to store button references
 
 finalC= StringVar()
 finalH= StringVar()
+#go = StringVar()
 scoreH = Entry(window,textvariable=finalH).place(x=200,y=250)
 scoreC = Entry(window,textvariable=finalC).place(x=-0,y=250)
+
+#game_over = Entry(window,textvariable=go).place(x=-0,y=350)
 
 hi = 0
 lo = 0
@@ -87,7 +90,7 @@ def show_press(press, lastPressed, local_isAI):
                     buttons[i].pack_forget()
                     
                 else:
-                    finalH.set("error")
+                    finalH.set("Invalid choice of element!")
             
             i = i+1
             
@@ -202,6 +205,9 @@ def minmax(l,r):
     vis[l][r] = True
     dp[l][r]=x
     
+    print("the best sum calculated by minmax in range {},{} is {}\n".format(l,r,dp[l][r]))
+    print("the number of value taken to calculate it is {} where prefix is {}\n".format(path[l][r], prefix[l][r]))
+    
     return dp[l][r]
 
 
@@ -216,7 +222,7 @@ def delay(sec):
 
 def game():
     
-    global lastPressed, window,lo,hi
+    global lastPressed, window,lo,hi, NumC, NumH, go 
 
     test.clear()
     
@@ -262,7 +268,7 @@ def game():
             #line_num +=1
             #print(num_list[j])
     
-    delay(3)
+    #delay(3)
     
     #----------------------------------------- START GAME ----------------------------------------------
     
@@ -311,7 +317,9 @@ def game():
 #----------------------------------------If HUMAN MOVES FIRST--------------------------------------------
      
        if choice == 2:   
-          print("available values:")
+           
+          #global NumC, NumH, go 
+          #print("available values:")
           for i in range(lo, hi+1):
           
             #print(test[i])
@@ -322,29 +330,52 @@ def game():
           
           print("\n\n")
           
-          passBtn = Button(window, text=' PASS', fg='black', bg='red', height=1, width=7, command= lambda: passval(passBtn ))
+          passBtn = Button(window, text=' PASS', fg='black', bg='red', height=1, width=7, command= lambda: passval(passBtn))
           passBtn.pack()
-        
           
+          
+                  
           window.mainloop()
 
 #----------------------------------------If AI MOVES FIRST--------------------------------------------          
        elif choice == 1:
            
-          global numC 
+          global numC , NumH, go 
+          
+          isAI = True
           
           print("Initially, hi = {}, lo = {}".format(hi,lo))
           
+          
+          
+          for i in range(lo, hi+1):
+          
+            #print(test[i])
+            btn = tk.Button(window, text=test[i], height=1, width=7, command=lambda lastPressed = lastPressed , press = i:show_press(press, lastPressed, isAI))
+            btn.pack()
+            lastPressed += 1
+            buttons.append(btn)
+          
+          print("\n\n")
+          
+          passBtn = Button(window, text=' PASS', fg='black', bg='red', height=1, width=7, command= lambda: passval(passBtn))
+          passBtn.pack()
+          
+          
           minmax(lo,hi)
           
-          print("After MinMAX, hi = {}, lo = {}".format(hi,lo))
+          #print("After MinMAX, hi = {}, lo = {}".format(hi,lo))
     
           if(lo<hi):
     
               if (prefix[lo][hi]):
-        
+                  
+                #print(prefix[lo][hi])
+                #print(path[lo][hi])
+                
                 for i in range(lo, lo+path[lo][hi]):
-            
+                    
+                    #print(i)
                     #comp_val+=numbers[i]
                     numC=numC+int(test[i])
                     test[i]=0
@@ -363,13 +394,15 @@ def game():
                 
                 hi-=path[lo][hi]
             
-        
+          print("After MinMAX, hi = {}, lo = {}".format(hi,lo))
         
    
     
           totalC=str(numC)
+          totalH = str(numH)
           finalC.set(totalC)
-          
+          finalH.set(totalH)
+          '''
           for i in range(lo, hi+1):
           
             #print(test[i])
@@ -382,25 +415,14 @@ def game():
           
           passBtn = Button(window, text=' PASS', fg='black', bg='red', height=1, width=7, command= lambda: passval(passBtn))
           passBtn.pack()
+          '''
+          
         
           
           window.mainloop()
 
           
 game()
-
-if (totalH>totalC):
-        
-            print("Congratulations!!! You are the winner..\n")
-            
-        
-elif (totalH<totalC):
-        
-            print("Computer Wins!!! Better luck next time..\n")
-        
-else:
-        
-            print("The match drawn!!!\n")
 
 
 
